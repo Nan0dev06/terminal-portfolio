@@ -33,11 +33,14 @@ def brightness_to_char(brightness):
 
 for b in pixels[:10]:
     print(f"{b} → {brightness_to_char(b)}")
-# Build and print the Full ASCII art
-for row in range(img.height):
-    line = ""
-    for col in range(img.width):
-        brightness = img.getpixel((col, row))
-        char = brightness_to_char(brightness)
-        line += char   
-    print(line)
+# Build and print the Full ASCII art inside portrait.txt
+
+with open("portrait.txt", "w", encoding="utf-8") as f:
+    for row in range(img.height):
+        line = ""
+        for col in range(img.width):
+            brightness = img.getpixel((col, row))
+            char = brightness_to_char(brightness)
+            line += char   
+        f.write(line + "\n")
+    
