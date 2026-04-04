@@ -1,0 +1,35 @@
+Screen {
+    layout: horizontal;
+    overflow: hidden;
+    
+}
+
+.portrait {
+    width: 45%;
+    padding-top: 12;
+    padding-left: 26;
+    overflow: hidden;
+    
+}
+.right-panel {
+    width: 55%;
+    layout: vertical;
+    padding-top: 5;
+    padding-left: 1;
+    
+
+}
+
+.bio {
+    padding-top: 5;
+    
+    
+}
+.title {
+    height: auto;
+    
+    
+}
+.stars {
+    height: 3;
+}

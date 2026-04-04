@@ -9,7 +9,7 @@ img = img.filter(ImageFilter.SHARPEN)
 enhancer = ImageEnhance.Contrast(img)
 
 img = enhancer.enhance(4.5)
-img = img.resize((76, 38))
+img = img.resize((60, 30))
 print(f"Image size : {img.size}")
 # Convert to grayscale — each pixel becomes one brightness number (0-255)
 img = img.convert("L")
