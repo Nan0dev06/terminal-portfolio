@@ -47,19 +47,34 @@ class TitleWithStars(Static):
 class TypingText(Static):
 
     def on_mount(self):
-        self.full_text = "Nour Al Shami is a computer science student at USAL, building toward AI Engineering.\n Drawn to machine perception, computer vision, and creative sides of code.\n\nWhen not coding, she is deep in game lore or failing to teach her cat new tricks.\nCurrently exploring the world of humanoid robotics and AI research."
+        self.full_text = """Nour Al Shami is a computer science student at USAL, building toward AI Engineering.
+                            \nDrawn to machine perception, computer vision, and creative sides of code.
+
+                            \nWhen not coding, she is deep in game lore or failing to teach her cat new tricks.
+                            \nCurrently exploring the world of humanoid robotics and AI research."""
+                                
         self.displayed = ""
-        self.set_interval(0.05, self.type_next_char)
+        self.set_interval(0.03, self.type_next_char)
 
     def type_next_char(self):
         if len(self.displayed) < len(self.full_text):
             self.displayed += self.full_text[len(self.displayed)]
-            self.update(self.displayed)    
+            self.update(self.displayed)  
+        else:
+            self.app.query_one(".links").display = True  
 class PortfolioApp(App):
     CSS_PATH = "portfolio.tcss"
     BINDINGS = [
         ("t", "next_theme", "Theme"),
+        ("q", "quit", "Quit"),
     ]
+    def action_open_github(self):
+        import webbrowser
+        webbrowser.open("https://github.com/Nan0dev06")
+
+    def action_open_linkedin(self):
+        import webbrowser
+        webbrowser.open("https://www.linkedin.com/in/nour-al-shami-3701a037a/")
     theme_index = 0
     def on_mount(self):
         self.register_theme(nano_green)
@@ -83,6 +98,12 @@ class PortfolioApp(App):
             with Vertical(classes="right-panel"):
                 yield TitleWithStars(classes="title")
                 yield TypingText( classes="bio")
+                yield Static("""
+                            [dim]----------------------------------------[/dim]
+                            [bold]GitHub[/bold]    [@click='app.open_github']@Nan0dev06[/]
+                            [bold]Email[/bold]     nano.06dev@gmail.com
+                            [bold]LinkedIn[/bold]  [@click='app.open_linkedin']/in/nour-al-shami[/]
+""", classes="links", markup=True)
         yield Footer()
 
 if __name__ == "__main__":
