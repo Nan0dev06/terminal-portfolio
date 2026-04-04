@@ -7,25 +7,25 @@ Screen {
 }
 
 .portrait {
-    width: 30%;
-    padding-top: 10;
-    padding-left: 7;
+    width: 65;
+    padding-top: 5;
+    padding-left: 5;
     overflow: hidden;
+    height: 100%;
     
     
 }
+
 .right-panel {
-    width: 55%;
+    width: 1fr;
     layout: vertical;
     padding-top: 5;
-    padding-left: 1;
-    
-    
-
+    padding-left: 2;
 }
 
 .bio {
-    padding-top: 5;
+    padding-top: 1;
+    height: auto;
     
     
     
