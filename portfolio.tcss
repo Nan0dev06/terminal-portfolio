@@ -22,6 +22,12 @@ Screen {
     
 
 }
+.header-binary {
+    height: 1;
+    width: 100%;
+    text-align: center;
+    dock: top;
+}
 
 .right-panel {
     width: 1fr;

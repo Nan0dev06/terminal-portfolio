@@ -93,6 +93,7 @@ class PortfolioApp(App):
     def compose(self) -> ComposeResult:
         with open("portrait.txt", "r", encoding="utf-8") as f:
             portrait = f.read()
+        yield Static("01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100", classes="header-binary")    
         with Horizontal():
             yield Static(portrait, classes="portrait")
             with Vertical(classes="right-panel"):
