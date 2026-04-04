@@ -1,14 +1,17 @@
 Screen {
     layout: horizontal;
     overflow: hidden;
+     min-width: 100;
+    
     
 }
 
 .portrait {
-    width: 45%;
-    padding-top: 12;
-    padding-left: 26;
+    width: 30%;
+    padding-top: 10;
+    padding-left: 7;
     overflow: hidden;
+    
     
 }
 .right-panel {
@@ -17,6 +20,7 @@ Screen {
     padding-top: 5;
     padding-left: 1;
     
+    
 
 }
 
@@ -24,12 +28,15 @@ Screen {
     padding-top: 5;
     
     
+    
 }
 .title {
     height: auto;
     
     
+    
 }
 .stars {
     height: 3;
+    
 }

@@ -1,8 +1,25 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Static
 from textual.containers import Horizontal, Vertical
+from textual.widgets import Static, Footer
+from textual.theme import Theme
 import pyfiglet
 import random
+
+nano_green = Theme(
+    name="nano-green",
+    primary="#00FF41",
+    secondary="#008F11",
+    accent="#00FF41",
+    foreground="#00FF41",
+    background="#0D0208",
+    success="#00FF41",
+    warning="#FFD700",
+    error="#FF0000",
+    surface="#0D0208",
+    panel="#0D0208",
+    dark=True,
+)
 
 class TitleWithStars(Static):
 
@@ -13,7 +30,7 @@ class TitleWithStars(Static):
     ]
 
     def on_mount(self):
-        import pyfiglet
+        
         self.title_text = pyfiglet.figlet_format("Nano", font="slant")
         self.set_interval(0.5, self.render_all)
 
@@ -40,6 +57,23 @@ class TypingText(Static):
             self.update(self.displayed)    
 class PortfolioApp(App):
     CSS_PATH = "portfolio.tcss"
+    BINDINGS = [
+        ("t", "next_theme", "Theme"),
+    ]
+    theme_index = 0
+    def on_mount(self):
+        self.register_theme(nano_green)
+    def action_next_theme(self):
+        themes = ["nord",
+                  "gruvbox", 
+                  "tokyo-night", 
+                  "textual-dark", 
+                  "atom-one-dark",
+                  "nano-green"
+                  ]
+        self.theme_index = (self.theme_index + 1) % len(themes)
+        self.theme = themes[self.theme_index]
+        
 
     def compose(self) -> ComposeResult:
         with open("portrait.txt", "r", encoding="utf-8") as f:
@@ -49,6 +83,7 @@ class PortfolioApp(App):
             with Vertical(classes="right-panel"):
                 yield TitleWithStars(classes="title")
                 yield TypingText( classes="bio")
+        yield Footer()
 
 if __name__ == "__main__":
     app = PortfolioApp()
