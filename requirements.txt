@@ -1,0 +1,4 @@
+asyncssh==2.14.2
+Pillow==10.4.0
+pyfiglet==1.0.2
+textual==0.79.1

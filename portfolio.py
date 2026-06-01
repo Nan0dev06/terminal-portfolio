@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from textual.app import App, ComposeResult
 from textual.widgets import Static
 from textual.containers import Horizontal, Vertical
@@ -5,6 +7,9 @@ from textual.widgets import Static, Footer
 from textual.theme import Theme
 import pyfiglet
 import random
+
+
+ROOT = Path(__file__).resolve().parent
 
 nano_green = Theme(
     name="nano-green",
@@ -91,7 +96,7 @@ class PortfolioApp(App):
         
 
     def compose(self) -> ComposeResult:
-        with open("portrait.txt", "r", encoding="utf-8") as f:
+        with open(ROOT / "portrait.txt", "r", encoding="utf-8") as f:
             portrait = f.read()
         yield Static("01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100", classes="header-binary")    
         with Horizontal():
