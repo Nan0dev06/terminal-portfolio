@@ -1,91 +1,134 @@
-# Terminal SSH Portfolio
+<h1 align="center">nano · terminal portfolio</h1>
 
-An SSH portfolio that opens a Textual TUI instead of a normal shell.
+<p align="center">
+  My portfolio isn't a website you scroll — it's a terminal you connect to.<br>
+  A <a href="https://textual.textualize.io/">Textual</a> TUI that greets visitors right inside their own terminal.
+</p>
 
-Visitors connect with:
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.12+-00FF41?style=flat-square&logo=python&logoColor=white">
+  <img alt="Textual" src="https://img.shields.io/badge/TUI-Textual-00FF41?style=flat-square">
+  <img alt="asyncssh" src="https://img.shields.io/badge/SSH-asyncssh-00FF41?style=flat-square">
+</p>
+
+---
+
+## What is this?
+
+This is my personal portfolio, built as a **terminal user interface (TUI)** instead of a web page — my first Python project. It shows an ASCII portrait, an animated intro, a typing bio, and my links, all rendered in a matrix-green terminal aesthetic with switchable themes.
+
+It runs two ways:
+
+- **Locally** — just run the app and it fills your terminal.
+- **Over SSH** — deployed on a server, anyone can connect with a single `ssh` command and the portfolio opens in *their* terminal. No website, no browser.
+
+## Features
+
+- 🎨 **Six themes**, toggle live — matrix-green (custom), Nord, Gruvbox, Tokyo Night, Textual Dark, Atom One Dark
+- 🖼️ **ASCII portrait** generated from a photo
+- ⭐ Animated title with twinkling stars + a typing-effect bio
+- 🔗 Clickable GitHub / LinkedIn / email links
+- 🔐 **SSH backend** that serves the full TUI to remote visitors — no login, no password
+
+## Controls
+
+| Key | Action        |
+|-----|---------------|
+| `t` | Cycle themes  |
+| `q` | Quit          |
+
+## Run it locally
+
+You only need Python. This shows the portfolio directly in your terminal (no SSH involved):
 
 ```bash
-ssh nano@yourdomain
-```
-
-Inside the portfolio:
-
-- `t` cycles color themes
-- `q` quits
-
-## Why This Backend Works
-
-Textual needs a real PTY so it can detect terminal size, colors, and keyboard input. The SSH backend in `ssh_server.py` accepts the SSH session, creates a Linux pseudo-terminal, starts `portfolio.py` inside that PTY, and bridges input/output between the visitor and the app.
-
-That means the full TUI runs correctly on Linux hosts and containers. On Windows, the server shows a small fallback message because Windows does not provide the same PTY behavior for this setup.
-
-## Run Locally
-
-The full SSH experience should be tested on Linux, WSL, or Docker:
-
-```bash
+# clone, then from the project folder:
 python -m venv .venv
+
+# Windows
+.\.venv\Scripts\python.exe -m pip install textual==8.2.8 pyfiglet==1.0.2
+.\.venv\Scripts\python.exe portfolio.py
+
+# macOS / Linux
 source .venv/bin/activate
-pip install -r requirements.txt
-python ssh_server.py
+pip install textual==8.2.8 pyfiglet==1.0.2
+python portfolio.py
 ```
 
-Then connect from another terminal:
+## How the SSH version works
 
-```bash
-ssh nano@localhost -p 2222
+A normal SSH login drops you into a shell. This one drops you into the portfolio instead.
+
+```
+visitor types  ssh nano@<host>
+        │
+        ▼
+ssh_server.py accepts the connection (no auth — it's public)
+        │
+        ▼
+it opens a Linux PTY and launches portfolio.py inside it
+        │
+        ▼
+keystrokes + screen output are bridged both ways
+        │
+        ▼
+the full TUI renders in the visitor's terminal
 ```
 
-The server intentionally allows any username and does not ask for a password because this is a public portfolio, not a login shell.
+Textual needs a real PTY (pseudo-terminal) to detect size, colors, and input — which is why the SSH server must run on **Linux / Docker / a VM**. On Windows it prints a short fallback message instead, because Windows doesn't provide the same PTY behavior.
 
-## Free/Easy Hosting Options
+## Tech stack
 
-GitHub is good for storing the code, but it cannot host a public raw SSH service by itself. Termius is an SSH client, so it helps you connect from desktop/mobile, but it is not a server host.
+| Piece            | Tool                          |
+|------------------|-------------------------------|
+| TUI framework    | [Textual](https://textual.textualize.io/) |
+| ASCII title      | [pyfiglet](https://github.com/pwaller/pyfiglet) |
+| SSH server       | [asyncssh](https://asyncssh.readthedocs.io/) |
+| Portrait art     | [Pillow](https://python-pillow.org/) (`ascii_art.py`) |
 
-Good options for this project:
+## Deploying it publicly (optional)
 
-- Google Cloud Free Tier e2-micro VM, because it is a Linux VM with a public IP and can expose TCP port `2222`.
-- Oracle Cloud Free Tier Ubuntu VM, if you regain access and want the most generous always-free VM.
-- Fly.io, because it can expose a TCP service and deploy directly from this Dockerfile, but new accounts should treat it as low-cost/trial rather than guaranteed permanent free.
-- Any small Linux VPS or free student VM that lets you expose TCP port `2222`.
+The app works locally without any of this. To let strangers connect over SSH, the server needs to run on a machine with a public IP.
 
-## Deploy To An Ubuntu VM
-
-Use this path for Google Cloud, Oracle Cloud, or any Ubuntu VPS. The installer defaults to port `22`, so visitors can connect without `-p 2222`:
+<details>
+<summary><b>Ubuntu VM (Google Cloud, Oracle Cloud, any VPS)</b></summary>
 
 ```bash
-sudo apt update
-sudo apt install -y git python3 python3-venv
-git clone https://github.com/YOUR_USERNAME/terminal-portfolio.git
+sudo apt update && sudo apt install -y git python3 python3-venv
+git clone https://github.com/Nan0dev06/terminal-portfolio.git
 cd terminal-portfolio
 bash deploy/install_ubuntu.sh
 ```
 
-Open inbound TCP port `22` in the cloud firewall, then connect:
+The installer defaults to port `22`, sets up a `systemd` service, and starts on boot. Open inbound TCP port `22` in the cloud firewall, then visitors connect with `ssh nano@YOUR_SERVER_IP`.
+</details>
+
+<details>
+<summary><b>Fly.io (Docker)</b></summary>
 
 ```bash
-ssh nano@YOUR_SERVER_IP
-```
-
-The service is installed as `nano-portfolio` and starts on boot.
-
-Important: only one SSH service can use port `22` on the same VM. For the smooth public command, use a dedicated tiny VM for the portfolio, or move your private admin SSH access to another port before starting this service.
-
-## Deploy To Fly.io
-
-1. Install the Fly CLI.
-2. Log in with `fly auth login`.
-3. From this project folder, run:
-
-```bash
-fly launch --no-deploy
+fly launch --no-deploy   # reads fly.toml
 fly deploy
 ```
 
-If Fly asks about the app name, either keep `nano-terminal-portfolio` or choose a unique name. After deploy:
+`fly.toml` maps external port `22` → container `2222`, so the connect command stays clean: `ssh nano@<app>.fly.dev`.
+</details>
 
-```bash
-ssh nano@nano-terminal-portfolio.fly.dev -p 2222
+## Project layout
+
+```
+portfolio.py            the Textual TUI (the portfolio itself)
+portfolio.tcss          styles
+ssh_server.py           SSH backend that serves the TUI over a PTY
+ascii_art.py            turns a photo into the ASCII portrait
+docs/index.html         landing page with the copyable connect command
+deploy/                 Ubuntu installer + systemd service
+Dockerfile / fly.toml   container + Fly.io deploy config
 ```
 
-For a custom domain, point it at Fly and keep using port `2222` unless your host supports forwarding port `22`.
+---
+
+<p align="center">
+  Built by <b>Nour Al Shami</b> · CS student, heading toward AI engineering<br>
+  <a href="https://github.com/Nan0dev06">GitHub</a> · <a href="https://www.linkedin.com/in/nour-al-shami-3701a037a/">LinkedIn</a>
+</p>
