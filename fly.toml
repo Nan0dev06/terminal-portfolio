@@ -11,5 +11,7 @@ primary_region = "ams"
   auto_start_machines = true
   min_machines_running = 1
 
+  # External port 22 -> container port 2222, so visitors connect with the
+  # clean `ssh nano@nano-terminal-portfolio.fly.dev` (no -p needed).
   [[services.ports]]
-    port = 2222
+    port = 22

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PORT="${PORT:-2222}"
+PORT="${PORT:-22}"
 SERVICE_FILE="/etc/systemd/system/nano-portfolio.service"
 TMP_SERVICE="$(mktemp)"
 
@@ -23,4 +23,8 @@ sudo systemctl restart nano-portfolio
 
 echo "Nano portfolio SSH server is running on port $PORT."
 echo "Open TCP port $PORT in your cloud firewall, then connect with:"
-echo "ssh nano@YOUR_SERVER_IP -p $PORT"
+if [ "$PORT" = "22" ]; then
+  echo "ssh nano@YOUR_SERVER_IP"
+else
+  echo "ssh nano@YOUR_SERVER_IP -p $PORT"
+fi

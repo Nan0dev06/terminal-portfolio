@@ -5,7 +5,7 @@ An SSH portfolio that opens a Textual TUI instead of a normal shell.
 Visitors connect with:
 
 ```bash
-ssh nano@yourdomain -p 2222
+ssh nano@yourdomain
 ```
 
 Inside the portfolio:
@@ -51,7 +51,7 @@ Good options for this project:
 
 ## Deploy To An Ubuntu VM
 
-Use this path for Google Cloud, Oracle Cloud, or any Ubuntu VPS:
+Use this path for Google Cloud, Oracle Cloud, or any Ubuntu VPS. The installer defaults to port `22`, so visitors can connect without `-p 2222`:
 
 ```bash
 sudo apt update
@@ -61,13 +61,15 @@ cd terminal-portfolio
 bash deploy/install_ubuntu.sh
 ```
 
-Open inbound TCP port `2222` in the cloud firewall, then connect:
+Open inbound TCP port `22` in the cloud firewall, then connect:
 
 ```bash
-ssh nano@YOUR_SERVER_IP -p 2222
+ssh nano@YOUR_SERVER_IP
 ```
 
 The service is installed as `nano-portfolio` and starts on boot.
+
+Important: only one SSH service can use port `22` on the same VM. For the smooth public command, use a dedicated tiny VM for the portfolio, or move your private admin SSH access to another port before starting this service.
 
 ## Deploy To Fly.io
 
