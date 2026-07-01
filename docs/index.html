@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>nano — ssh portfolio</title>
+<style>
+  /* ---- change this one line if your server address changes ---- */
+  :root {
+    --green: #00FF41;
+    --green-dim: #008F11;
+    --bg: #0D0208;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--green);
+    font-family: "SF Mono", "Cascadia Code", "Consolas", ui-monospace, monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    line-height: 1.6;
+    -webkit-font-smoothing: none;
+  }
+  main { width: 100%; max-width: 620px; }
+
+  .prompt { color: var(--green-dim); }
+  .cursor {
+    display: inline-block;
+    width: 9px;
+    height: 1.05em;
+    background: var(--green);
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  h1 {
+    font-size: 1rem;
+    font-weight: normal;
+    color: var(--green-dim);
+    margin-bottom: 28px;
+    letter-spacing: 0.5px;
+  }
+  h1 .who { color: var(--green); }
+
+  .cmd {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--green-dim);
+    background: rgba(0, 255, 65, 0.03);
+    padding: 16px 18px;
+    border-radius: 4px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .cmd code {
+    font-size: 1.15rem;
+    flex: 1;
+    min-width: 200px;
+    word-break: break-all;
+  }
+  .cmd code .prompt { user-select: none; }
+
+  button {
+    font-family: inherit;
+    font-size: 0.8rem;
+    background: transparent;
+    color: var(--green);
+    border: 1px solid var(--green-dim);
+    padding: 7px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  button:hover { background: var(--green); color: var(--bg); }
+  button.copied { background: var(--green); color: var(--bg); }
+
+  .notes { color: var(--green-dim); font-size: 0.85rem; }
+  .notes p { margin-bottom: 6px; }
+  .notes .hint::before { content: "› "; }
+</style>
+</head>
+<body>
+  <main>
+    <h1><span class="prompt">$</span> connect to <span class="who">nano</span>'s terminal portfolio</h1>
+
+    <div class="cmd">
+      <code><span class="prompt">$ </span><span id="ssh-cmd"></span></code>
+      <button id="copy-btn" type="button">copy</button>
+    </div>
+
+    <div class="notes">
+      <p class="hint">paste it into your terminal and hit enter — no password, no setup</p>
+      <p class="hint">press <b>t</b> to switch themes, <b>q</b> to quit</p>
+      <p class="hint">works on macOS, Linux, and Windows (built-in ssh)<span class="cursor"></span></p>
+    </div>
+  </main>
+
+<script>
+  // The public address of your SSH portfolio server.
+  // Change this to your own domain / Fly app after you deploy.
+  const HOST = "nano-terminal-portfolio.fly.dev";
+  const COMMAND = "ssh nano@" + HOST;
+
+  document.getElementById("ssh-cmd").textContent = COMMAND;
+
+  const btn = document.getElementById("copy-btn");
+  btn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(COMMAND);
+    } catch {
+      // fallback for older / insecure contexts
+      const t = document.createElement("textarea");
+      t.value = COMMAND;
+      document.body.appendChild(t);
+      t.select();
+      document.execCommand("copy");
+      t.remove();
+    }
+    btn.textContent = "copied ✓";
+    btn.classList.add("copied");
+    setTimeout(() => {
+      btn.textContent = "copy";
+      btn.classList.remove("copied");
+    }, 1500);
+  });
+</script>
+</body>
+</html>

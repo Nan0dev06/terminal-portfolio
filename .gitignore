@@ -1,0 +1,9 @@
+# SSH host key is generated per-deploy; never commit the private key
+ssh_host_key
+ssh_host_key.pub
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
